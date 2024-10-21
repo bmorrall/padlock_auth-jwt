@@ -11,3 +11,5 @@ gem "puma"
 gem "rails", "~> #{ENV.fetch("RAILS_VERSION")}.0"
 
 gem "jwt", github: "jwt/ruby-jwt"
+
+gem "rbnacl", require: false

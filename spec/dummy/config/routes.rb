@@ -9,6 +9,11 @@ Rails.application.routes.draw do
   get "service-worker" => "rails/pwa#service_worker", :as => :pwa_service_worker
   get "manifest" => "rails/pwa#manifest", :as => :pwa_manifest
 
+  resources :semi_protected_resources, only: %i[index show]
+  resources :full_protected_resources, only: %i[index show]
+
+  get "metal.json" => "metal#index"
+
   # Defines the root path route ("/")
   # root "posts#index"
 end

@@ -1,0 +1,22 @@
+en:
+  padlock_auth:
+    errors:
+      messages:
+        invalid_token:
+          invalid_jwt_token: "The access token is not a valid JWT."
+          invalid_signature: "The access token has an invalid signature."
+          missing_exp_claim: "The access token is missing a required exp claim."
+          missing_nbf_claim: "The access token is missing a required nbf claim."
+          missing_iss_claim: "The access token is missing a required iss claim."
+          missing_aud_claim: "The access token is missing a required aud claim."
+          missing_jti_claim: "The access token is missing a required jti claim."
+          missing_iat_claim: "The access token is missing a required iat claim."
+          missing_sub_claim: "The access token is missing a required sub claim."
+          invalid_exp_claim: "The access token has expired."
+          invalid_nbf_claim: "The access token is not yet valid."
+          invalid_iss_claim: "The access token is from an unknown issuer."
+          invalid_jti_claim: "The access token was revoked."
+          invalid_sub_claim: "The access token is for a different subject."
+        forbidden_token:
+          invalid_jwt_token: "The access token is not a valid JWT."
+          invalid_aud_claim: 'Access to this resource requires audience "%{oauth_scopes}".'
