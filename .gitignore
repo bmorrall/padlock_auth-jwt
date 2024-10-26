@@ -1,6 +1,7 @@
 Gemfile.lock
 
 /.bundle/
+/coverage/
 /doc/
 /log/*.log
 /pkg/
