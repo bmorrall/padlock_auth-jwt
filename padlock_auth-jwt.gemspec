@@ -19,7 +19,7 @@ Gem::Specification.new do |spec|
   end
 
   spec.add_dependency "padlock_auth"
-  spec.add_dependency "jwt", ">= 2.9.4"
+  spec.add_dependency "jwt", ">= 2.9.4", "< 3.0"
 
   spec.add_development_dependency "rspec-rails"
   spec.add_development_dependency "standard", ">= 1.41.1"
