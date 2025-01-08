@@ -83,6 +83,8 @@ RSpec.describe PadlockAuth::Jwt::AccessToken do
 
       it { expect(subject.accessible?).to be true }
 
+      it { expect(subject.header).to eq("alg" => algorithm, "typ" => "at+jwt") }
+
       it "rejects tokens signed with a different secret key" do
         access_token = described_class.new(encode_access_token("invalid"), strategy)
         expect(access_token.accessible?).to be false
@@ -108,6 +110,8 @@ RSpec.describe PadlockAuth::Jwt::AccessToken do
 
       it { expect(subject.accessible?).to be true }
 
+      it { expect(subject.header).to eq("alg" => algorithm, "typ" => "at+jwt") }
+
       it "rejects tokens signed with a different RSA key" do
         access_token = described_class.new(encode_access_token(OpenSSL::PKey::RSA.generate(2048)), strategy)
         expect(access_token.accessible?).to be false
@@ -130,6 +134,8 @@ RSpec.describe PadlockAuth::Jwt::AccessToken do
       let(:algorithm) { algorithm }
 
       it { expect(subject.accessible?).to be true }
+
+      it { expect(subject.header).to eq("alg" => algorithm, "typ" => "at+jwt") }
 
       it "rejects tokens signed with a different ec group" do
         access_token = described_class.new(encode_access_token(OpenSSL::PKey::EC.generate(ec_group)), strategy)
