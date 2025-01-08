@@ -12,8 +12,6 @@ module PadlockAuth
       def accessible?
         return false unless valid_jwt_token?
 
-        return false unless valid_signature?
-
         return false unless includes_required_claims?
 
         # "exp" (Expiration Time) Claim
@@ -35,8 +33,7 @@ module PadlockAuth
       end
 
       def invalid_token_reason
-        return :invalid_jwt_token unless valid_jwt_token?
-        return :invalid_signature unless valid_signature?
+        return valid_header? ? :invalid_signature : :invalid_jwt_token unless valid_jwt_token?
 
         return :missing_exp_claim unless includes_required_exp_claim?
         return :invalid_exp_claim unless valid_exp_claim?
@@ -83,19 +80,25 @@ module PadlockAuth
 
       private
 
+      def valid_jwt_token?
+        valid_signature? && valid_header?
+      end
+
       # https://datatracker.ietf.org/doc/html/rfc9068#JWTATLValidate
       # The resource server MUST verify that the "typ" header value is "at+jwt" or "application/at+jwt" and reject tokens carrying any other value.
-      def valid_jwt_token?
-        return @valid_jwt_token if instance_variable_defined?(:@valid_jwt_token)
-        @valid_jwt_token = @encoded_token.header.present? &&
+      def valid_header?
+        return @valid_header if instance_variable_defined?(:@valid_header)
+        @valid_header = @encoded_token.header.present? &&
           @strategy.header_types.include?(@encoded_token.header["typ"])
       rescue JWT::DecodeError
-        @valid_jwt_token = false
+        @valid_header = false
       end
 
       def valid_signature?
         return @valid_signature if instance_variable_defined?(:@valid_signature)
         @valid_signature = @encoded_token.valid_signature?(algorithm: @strategy.algorithm, key: @strategy.secret_key)
+      rescue JWT::DecodeError
+        @valid_signature = false
       end
 
       def includes_required_claims?
