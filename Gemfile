@@ -10,4 +10,5 @@ gem "puma"
 
 gem "rails", "~> #{ENV.fetch("RAILS_VERSION")}.0"
 
-gem "rbnacl", require: false
+# allow support for ED25519 algorithm
+gem "jwt-eddsa", require: false
