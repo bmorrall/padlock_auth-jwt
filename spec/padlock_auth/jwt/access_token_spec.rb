@@ -83,6 +83,8 @@ RSpec.describe PadlockAuth::Jwt::AccessToken do
 
       it { expect(subject.accessible?).to be true }
 
+      it { expect(subject.header).to eq("alg" => algorithm, "typ" => "at+jwt") }
+
       it "rejects tokens signed with a different secret key" do
         access_token = described_class.new(encode_access_token("invalid"), strategy)
         expect(access_token.accessible?).to be false
@@ -108,6 +110,8 @@ RSpec.describe PadlockAuth::Jwt::AccessToken do
 
       it { expect(subject.accessible?).to be true }
 
+      it { expect(subject.header).to eq("alg" => algorithm, "typ" => "at+jwt") }
+
       it "rejects tokens signed with a different RSA key" do
         access_token = described_class.new(encode_access_token(OpenSSL::PKey::RSA.generate(2048)), strategy)
         expect(access_token.accessible?).to be false
@@ -131,6 +135,8 @@ RSpec.describe PadlockAuth::Jwt::AccessToken do
 
       it { expect(subject.accessible?).to be true }
 
+      it { expect(subject.header).to eq("alg" => algorithm, "typ" => "at+jwt") }
+
       it "rejects tokens signed with a different ec group" do
         access_token = described_class.new(encode_access_token(OpenSSL::PKey::EC.generate(ec_group)), strategy)
         expect(access_token.accessible?).to be false
@@ -140,18 +146,20 @@ RSpec.describe PadlockAuth::Jwt::AccessToken do
   end
 
   context "with a valid access token signed with ED25519" do
-    let(:private_key) { RbNaCl::Signatures::Ed25519::SigningKey.new("abcdefghijklmnopqrstuvwxyzABCDEF") }
+    let(:private_key) { Ed25519::SigningKey.new("abcdefghijklmnopqrstuvwxyzABCDEF") }
 
     let(:raw_token) { encode_access_token(private_key) }
     let(:secret_key) { private_key.verify_key }
     let(:algorithm) { "ED25519" }
 
-    before { require "rbnacl" }
+    before { require "jwt/eddsa" }
 
     it { expect(subject.accessible?).to be true }
 
+    it { expect(subject.header).to eq("alg" => "EdDSA", "typ" => "at+jwt") }
+
     it "rejects tokens signed with a different ED25519 key" do
-      other_private_key = RbNaCl::Signatures::Ed25519::SigningKey.new("abcdefghijklmnopqrstuvwxyzABCDEF".reverse)
+      other_private_key = Ed25519::SigningKey.new("abcdefghijklmnopqrstuvwxyzABCDEF".reverse)
       access_token = described_class.new(encode_access_token(other_private_key), strategy)
       expect(access_token.accessible?).to be false
       expect(access_token.invalid_token_reason).to eq(:invalid_signature)
